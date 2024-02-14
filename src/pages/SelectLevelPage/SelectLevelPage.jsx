@@ -1,7 +1,18 @@
 import { Link } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleCheck } from "../../store/cardSlice";
 
 export function SelectLevelPage() {
+  const isChecked = useSelector(state => state.cards.isChecked);
+  const dispatch = useDispatch();
+
+  const toggleChecked = () => {
+    dispatch(toggleCheck());
+    console.log("click");
+    console.log(isChecked);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.modal}>
@@ -23,6 +34,10 @@ export function SelectLevelPage() {
             </Link>
           </li>
         </ul>
+        <div className={styles.checkbox}>
+          <input type="checkbox" onChange={toggleChecked}></input>
+          <div>Упрощенный режим с 3 допустимыми ошибками</div>
+        </div>
       </div>
     </div>
   );

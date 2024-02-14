@@ -5,6 +5,7 @@ import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
+import { useSelector } from "react-redux";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -41,10 +42,13 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const isChecked = useSelector(state => state.cards.isChecked);
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([]);
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW);
+  // Количество ошибок
+  const [countOfMistakes, setCountOfMistakes] = useState(3);
 
   // Дата начала игры
   const [gameStartDate, setGameStartDate] = useState(null);
@@ -73,6 +77,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
+    setCountOfMistakes(3);
   }
 
   /**
@@ -98,6 +103,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         open: true,
       };
     });
+    console.log("nextCards: ", nextCards);
 
     setCards(nextCards);
 
@@ -113,9 +119,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     const openCards = nextCards.filter(card => card.open);
 
     // Ищем открытые карты, у которых нет пары среди других открытых
-    const openCardsWithoutPair = openCards.filter(card => {
+    let openCardsWithoutPair = openCards.filter(card => {
       const sameCards = openCards.filter(openCard => card.suit === openCard.suit && card.rank === openCard.rank);
-
       if (sameCards.length < 2) {
         return true;
       }
@@ -123,15 +128,41 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return false;
     });
 
-    const playerLost = openCardsWithoutPair.length >= 2;
+    if (isChecked) {
+      console.log(openCardsWithoutPair);
+      const closingOfCards = () => {
+        openCardsWithoutPair = openCardsWithoutPair.map(card => {
+          card.open = false;
+        });
+      };
+      if (openCardsWithoutPair.length >= 2) {
+        // setCountOfMistakes(countOfMistakes + 1);
+        setTimeout(closingOfCards, 1000);
+      }
+      if (openCardsWithoutPair.length === 2) {
+        setCountOfMistakes(countOfMistakes - 1);
+      }
 
-    // "Игрок проиграл", т.к на поле есть две открытые карты без пары
-    if (playerLost) {
-      finishGame(STATUS_LOST);
-      return;
+      const playerLost = openCardsWithoutPair.length >= 2 && countOfMistakes === 0;
+      if (playerLost) {
+        finishGame(STATUS_LOST);
+        setCountOfMistakes(0);
+        return;
+      }
+
+      // ... игра продолжается
+    } else {
+      const playerLost = openCardsWithoutPair.length >= 2;
+
+      // "Игрок проиграл", т.к на поле есть две открытые карты без пары
+      if (playerLost) {
+        finishGame(STATUS_LOST);
+        setCountOfMistakes(0);
+        return;
+      }
+
+      // ... игра продолжается
     }
-
-    // ... игра продолжается
   };
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
@@ -174,6 +205,12 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
   return (
     <div className={styles.container}>
+      {isChecked ? (
+        <div className={styles.modal}>
+          <h1 className={styles.mistake}>Осталось {countOfMistakes} ошибки</h1>
+          {/* <p>{countOfMistakes}</p> */}
+        </div>
+      ) : null}
       <div className={styles.header}>
         <div className={styles.timer}>
           {status === STATUS_PREVIEW ? (

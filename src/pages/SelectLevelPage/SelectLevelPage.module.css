@@ -62,3 +62,16 @@
 .levelLink:visited {
   color: #0080c1;
 }
+
+.checkbox {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 48px;
+  margin-bottom: 28px;
+  color: #0080c1;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+}
