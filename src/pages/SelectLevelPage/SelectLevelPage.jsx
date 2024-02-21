@@ -35,9 +35,12 @@ export function SelectLevelPage() {
           </li>
         </ul>
         <div className={styles.checkbox}>
-          <input type="checkbox" onChange={toggleChecked}></input>
-          <div>Упрощенный режим с 3 допустимыми ошибками</div>
+          <input className={styles.checkbox_input} type="checkbox" onChange={toggleChecked}></input>
+          <div className={styles.checkbox_text}>Легкий режим (3 жизни)</div>
         </div>
+        <Link className={styles.leaderboardLink} to="/game/leaderboard">
+          Перейти к лидерборду
+        </Link>
       </div>
     </div>
   );
