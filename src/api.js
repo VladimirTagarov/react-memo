@@ -1,12 +1,12 @@
-export async function getLeader() {
-  const response = await fetch(
-    "https://wedev-api.sky.pro/api/leaderboard",
+// export async function getLeader() {
+//   const response = await fetch(
+//     "https://wedev-api.sky.pro/api/leaderboard",
 
-    {
-      method: "GET",
-    },
-  );
+//     {
+//       method: "GET",
+//     },
+//   );
 
-  const data = await response.json();
-  return data;
-}
+//   const data = await response.json();
+//   return data;
+// }

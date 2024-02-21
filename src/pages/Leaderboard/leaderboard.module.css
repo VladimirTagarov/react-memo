@@ -22,8 +22,26 @@
   height: 64px;
   border-radius: 12px;
   background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  font-family: Roboto, sans-serif;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 ul {
   list-style: none;
+  gap: 15px;
+}
+
+.textInShape {
+  font-size: 24px;
+  line-height: 32px;
+  color: #000;
+}
+
+.opacityclass {
+  color: #999999;
 }
