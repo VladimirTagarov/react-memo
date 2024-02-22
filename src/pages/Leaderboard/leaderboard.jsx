@@ -10,24 +10,26 @@ export function Leaderboard() {
   const navigate = useNavigate();
   // const [arrayOfLeaders, setArrayOfLeaders] = useState([]);
 
-  const { data = [], isLoading } = useGetLeadersQuery();
+  const { data = [{}], isLoading } = useGetLeadersQuery();
 
   // console.log("data: " + data.leaders[0].name);
   // const [addLeader] = useAddLeadersMutation();
-  let leaderArray = data.leaders;
-  // leaderArray?.sort((a, b) => a.time - b.time);
+  let leaderArray = [{}];
+  leaderArray = data.leaders;
+  // console.log("последний эл-т массива: " + data.leaders[0].name);
+  leaderArray = [...leaderArray].sort((a, b) => a.time - b.time);
   // console.log(leaderArray);
 
-  let sortirizedArray = leaderArray.sort(function (a, b) {
-    if (a.release_date > b.release_date) {
-      return 1;
-    }
-    if (a.release_date < b.release_date) {
-      return -1;
-    }
-    return 0;
-  });
-  console.log(sortirizedArray);
+  // let sortirizedArray = [...leaderArray].sort(function (a, b) {
+  //   if (a.release_date > b.release_date) {
+  //     return 1;
+  //   }
+  //   if (a.release_date < b.release_date) {
+  //     return -1;
+  //   }
+  //   return 0;
+  // });
+  // console.log(sortirizedArray);
 
   function newGame() {
     navigate("/", { replace: true });
@@ -62,7 +64,7 @@ export function Leaderboard() {
         <h1>Загрузка...</h1>
       ) : (
         data &&
-        leaderArray.map(item => {
+        leaderArray?.map(item => {
           return (
             <div className={styles.row}>
               <div key={item.id} className={styles.textInShape}>

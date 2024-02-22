@@ -7,7 +7,7 @@ import celebrationImageUrl from "./images/celebration.png";
 import { Link, useParams } from "react-router-dom";
 import { useAddLeadersMutation, useGetLeadersQuery } from "../../store";
 import { useEffect, useState } from "react";
-import { postLeader } from "../../api";
+// import { postLeader } from "../../api";
 
 export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
   const params = useParams();
@@ -23,19 +23,19 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const newTimeOfLeader = Number(gameDurationMinutes * 60 + gameDurationSeconds);
   // console.log(newTimeOfLeader);
 
-  // async function handleNewLeader() {
-  //   if (newLeader) {
-  //     await addLeader({ name: newLeader, time: newTimeOfLeader });
-  //     setNewLeader(newLeader);
-  //   }
-  // }
-
   async function handleNewLeader() {
     if (newLeader) {
-      await postLeader(newLeader, newTimeOfLeader);
+      await addLeader({ name: newLeader, time: newTimeOfLeader });
       setNewLeader(newLeader);
     }
   }
+
+  // async function handleNewLeader() {
+  //   if (newLeader) {
+  //     await postLeader(newLeader, newTimeOfLeader);
+  //     setNewLeader(newLeader);
+  //   }
+  // }
 
   const title =
     isWon && params.pairsCount === "3"
@@ -64,7 +64,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
           <Button
             onClick={() => {
               handleNewLeader();
-              window.location.reload(true);
+              // window.location.reload(true);
             }}
           >
             Записать
