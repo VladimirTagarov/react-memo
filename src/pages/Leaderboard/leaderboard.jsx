@@ -17,7 +17,11 @@ export function Leaderboard() {
   let leaderArray = [{}];
   leaderArray = data.leaders;
   // console.log("последний эл-т массива: " + data.leaders[0].name);
-  leaderArray = [...leaderArray].sort((a, b) => a.time - b.time);
+
+  if (!isLoading) {
+    leaderArray = [...leaderArray].sort((a, b) => a.time - b.time);
+  }
+
   // console.log(leaderArray);
 
   // let sortirizedArray = [...leaderArray].sort(function (a, b) {

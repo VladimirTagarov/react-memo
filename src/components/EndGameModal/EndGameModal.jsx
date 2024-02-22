@@ -15,10 +15,18 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
 
   const [addLeader] = useAddLeadersMutation();
 
-  const { data = [] } = useGetLeadersQuery();
+  const { data = [], isLoading } = useGetLeadersQuery();
 
   useEffect(() => console.log(data), []);
   useEffect(() => console.log(addLeader), []);
+
+  let leaderArray = [{}];
+  leaderArray = data.leaders;
+
+  if (!isLoading) {
+    leaderArray = [...leaderArray].sort((a, b) => a.time - b.time);
+    console.log(leaderArray);
+  }
 
   const newTimeOfLeader = Number(gameDurationMinutes * 60 + gameDurationSeconds);
   // console.log(newTimeOfLeader);
@@ -37,12 +45,17 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   //   }
   // }
 
-  const title =
-    isWon && params.pairsCount === "3"
-      ? "Вы попали на Лидерборд!"
-      : isWon && params.pairsCount !== "3"
-      ? "Вы победили!"
-      : "Вы проиграли!";
+  let title = "";
+  if (!isLoading) {
+    title =
+      isWon && params.pairsCount === "9" && newTimeOfLeader <= leaderArray.at(-1).time
+        ? "Вы попали на Лидерборд!"
+        : isWon && params.pairsCount === "9" && newTimeOfLeader > leaderArray.at(-1).time
+        ? "Вы победили!"
+        : isWon && params.pairsCount !== "9"
+        ? "Вы победили!"
+        : "Вы проиграли!";
+  }
 
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
 

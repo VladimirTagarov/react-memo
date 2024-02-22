@@ -18,7 +18,7 @@ export const leadersApi = createApi({
       query: body => ({
         url: "leaderboard",
         method: "POST",
-        body,
+        body: JSON.stringify(body),
       }),
       //   invalidatesTags: [{ type: "Leaders", id: "LIST" }],
     }),
