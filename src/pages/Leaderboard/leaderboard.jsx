@@ -4,16 +4,26 @@ import styles from "./leaderboard.module.css";
 // import { getLeader } from "../../api";
 // import { useState } from "react";
 import { useGetLeadersQuery } from "../../store/leaderApi";
+// import { useEffect } from "react";
 
 export function Leaderboard() {
   const navigate = useNavigate();
-  // const [leaders, setLeaders] = useState([]);
-  let arrayOfLeaders = [];
+  // const [arrayOfLeaders, setArrayOfLeaders] = useState([]);
 
   const { data = [], isLoading } = useGetLeadersQuery();
+
   // console.log("data: " + data.leaders[0].name);
   // const [addLeader] = useAddLeadersMutation();
-  console.log("arrayofleaders: ", arrayOfLeaders);
+  let leaderArray = data.leaders;
+  // let sortLeaderArray = [];
+  leaderArray?.sort((a, b) => a.time - b.time);
+  console.log(leaderArray);
+
+  // useEffect(() => {
+  //   setArrayOfLeaders(leaderArray);
+  // }, [data]);
+
+  // console.log("arrayofleaders: ", arrayOfLeaders);
 
   function newGame() {
     navigate("/", { replace: true });
@@ -48,16 +58,16 @@ export function Leaderboard() {
         <h1>Загрузка...</h1>
       ) : (
         data &&
-        data.leaders.map(item => {
+        leaderArray.map(item => {
           return (
             <div className={styles.row}>
               <div key={item.id} className={styles.textInShape}>
                 # {item.id}
               </div>
-              <div key={item.id * 5} className={styles.textInShape}>
+              <div key={item.id * 15} className={styles.textInShape}>
                 {item.name}
               </div>
-              <div key={item.id * 7} className={styles.textInShape}>
+              <div key={item.id * 27} className={styles.textInShape}>
                 {timeConverter(item.time)}
               </div>
             </div>
