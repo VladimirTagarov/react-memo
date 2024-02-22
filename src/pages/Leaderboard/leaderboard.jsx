@@ -15,15 +15,19 @@ export function Leaderboard() {
   // console.log("data: " + data.leaders[0].name);
   // const [addLeader] = useAddLeadersMutation();
   let leaderArray = data.leaders;
-  // let sortLeaderArray = [];
-  leaderArray?.sort((a, b) => a.time - b.time);
-  console.log(leaderArray);
+  // leaderArray?.sort((a, b) => a.time - b.time);
+  // console.log(leaderArray);
 
-  // useEffect(() => {
-  //   setArrayOfLeaders(leaderArray);
-  // }, [data]);
-
-  // console.log("arrayofleaders: ", arrayOfLeaders);
+  let sortirizedArray = leaderArray.sort(function (a, b) {
+    if (a.release_date > b.release_date) {
+      return 1;
+    }
+    if (a.release_date < b.release_date) {
+      return -1;
+    }
+    return 0;
+  });
+  console.log(sortirizedArray);
 
   function newGame() {
     navigate("/", { replace: true });

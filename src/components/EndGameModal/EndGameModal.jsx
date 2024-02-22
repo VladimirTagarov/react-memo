@@ -63,7 +63,8 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
           />
           <Button
             onClick={() => {
-              handleNewLeader({ name: "fff", time: 32 });
+              handleNewLeader();
+              window.location.reload(true);
             }}
           >
             Записать
