@@ -6,6 +6,8 @@ import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
 import { useSelector } from "react-redux";
+import achiveAlohomoraImageUrl from "../Card/images/achiveAlohomora.png";
+import achiveEpiphanyImageUrl from "../Card/images/achiveEpiphany.png";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -42,9 +44,11 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
+  const [isAlohomoraClicked, setIsAlohomoraClicked] = useState(false);
+
   const isChecked = useSelector(state => state.cards.isChecked);
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
-  const [cards, setCards] = useState([]);
+  let [cards, setCards] = useState([]);
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW);
   // Количество ошибок
@@ -60,6 +64,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     seconds: 0,
     minutes: 0,
   });
+
+  const imgAlt = "achive emodji";
 
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
@@ -78,6 +84,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
     setCountOfMistakes(3);
+    setIsAlohomoraClicked(false);
   }
 
   /**
@@ -87,6 +94,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
    * - "Игрок проиграл", если на поле есть две открытые карты без пары
    * - "Игра продолжается", если не случилось первых двух условий
    */
+
   const openCard = clickedCard => {
     // Если карта уже открыта, то ничего не делаем
     if (clickedCard.open) {
@@ -161,6 +169,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         return;
       }
 
+      // handleAlohomora(clickedCard);
       // ... игра продолжается
     }
   };
@@ -203,6 +212,31 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     };
   }, [gameStartDate, gameEndDate]);
 
+  const handleAlohomora = clickedCard => {
+    setIsAlohomoraClicked(true);
+    // setStatus(STATUS_PREVIEW);
+    let cardsWhenalohomora = [];
+    cardsWhenalohomora = cards.map(card => {
+      if (card.open === false) {
+        return { ...card, open: true, openBefore: false };
+      } else {
+        return card;
+      }
+    });
+
+    setCards(cardsWhenalohomora);
+    console.log(cardsWhenalohomora);
+    setTimeout(() => {
+      let newCards = cardsWhenalohomora.map(card => {
+        if (card.openBefore === false) {
+          return { ...card, open: false };
+        }
+        return card;
+      });
+      setCards(newCards);
+    }, 5000);
+  };
+
   return (
     <div className={styles.container}>
       {isChecked ? (
@@ -213,7 +247,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       ) : null}
       <div className={styles.header}>
         <div className={styles.timer}>
-          {status === STATUS_PREVIEW ? (
+          {status === STATUS_PREVIEW && !isAlohomoraClicked ? (
             <div>
               <p className={styles.previewText}>Запоминайте пары!</p>
               <p className={styles.previewDescription}>Игра начнется через {previewSeconds} секунд</p>
@@ -232,7 +266,28 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+
+        {status === STATUS_IN_PROGRESS ? (
+          <>
+            <div className={styles.achivementContainer}>
+              {!isAlohomoraClicked ? (
+                <>
+                  <div
+                    onClick={() => {
+                      handleAlohomora();
+                    }}
+                  >
+                    <img className={styles.image} src={achiveEpiphanyImageUrl} alt={imgAlt} />
+                  </div>{" "}
+                </>
+              ) : null}
+              <div>
+                <img className={styles.image} src={achiveAlohomoraImageUrl} alt={imgAlt} />
+              </div>
+            </div>
+            <Button onClick={resetGame}>Начать заново</Button>
+          </>
+        ) : null}
       </div>
 
       <div className={styles.cards}>
@@ -243,6 +298,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             open={status !== STATUS_IN_PROGRESS ? true : card.open}
             suit={card.suit}
             rank={card.rank}
+            isAlohomoraClicked={isAlohomoraClicked}
+            setIsAlohomoraClicked={setIsAlohomoraClicked}
           />
         ))}
       </div>
@@ -254,6 +311,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             gameDurationSeconds={timer.seconds}
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}
+            isAlohomoraClicked={isAlohomoraClicked}
           />
         </div>
       ) : null}

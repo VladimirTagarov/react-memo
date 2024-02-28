@@ -91,3 +91,15 @@
   font-weight: 400;
   line-height: 32px;
 }
+
+.achivementContainer {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.image {
+  width: 68px;
+  height: 68px;
+  cursor: pointer;
+}

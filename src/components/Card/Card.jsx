@@ -16,7 +16,7 @@ const images = {
   [DIAMONDS_SUIT]: diamondsImageUrl,
 };
 
-const OpenCard = ({ rank, suit }) => {
+const OpenCard = ({ rank, suit, isAlohomoraClicked, setIsAlohomoraClicked }) => {
   return (
     <div className={styles.card}>
       <div className={styles.content}>

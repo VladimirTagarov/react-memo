@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 
 export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
   const params = useParams();
+
   const [newLeader, setNewLeader] = useState("");
 
   const [addLeader] = useAddLeadersMutation();
