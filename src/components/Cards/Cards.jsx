@@ -5,9 +5,10 @@ import styles from "./Cards.module.css";
 import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import achiveAlohomoraImageUrl from "../Card/images/achiveAlohomora.png";
 import achiveEpiphanyImageUrl from "../Card/images/achiveEpiphany.png";
+import { toggleAlohomora, toggleEpiphany } from "../../store/cardSlice";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -45,9 +46,9 @@ function getTimerValue(startDate, endDate) {
  * previewSeconds - сколько секунд пользователь будет видеть все карты открытыми до начала игры
  */
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
-  const [isEpiphanyClicked, setIsEpiphanyClicked] = useState(false);
-
-  const [isAlohomoraClicked, setIsAlohomoraClicked] = useState(false);
+  const isAlohomoraClicked = useSelector(state => state.cards.isAlohomoraClicked);
+  const isEpiphanyClicked = useSelector(state => state.cards.isEpiphanyClicked);
+  const dispatch = useDispatch();
 
   const isChecked = useSelector(state => state.cards.isChecked);
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
@@ -61,6 +62,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const [gameStartDate, setGameStartDate] = useState(null);
   // Дата конца игры
   let [gameEndDate, setGameEndDate] = useState(null);
+
+  const [isAlohomoraTooltip, setIsAlohomoraTooltip] = useState(false);
+
+  const [isEpiphanyTooltip, setIsEpiphanyTooltip] = useState(false);
 
   // Стейт для таймера, высчитывается в setInteval на основе gameStartDate и gameEndDate
   const [timer, setTimer] = useState({
@@ -87,7 +92,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
     setCountOfMistakes(3);
-    setIsEpiphanyClicked(false);
+    dispatch(toggleEpiphany);
   }
 
   /**
@@ -218,11 +223,12 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   }, [gameStartDate, gameEndDate, STATUS_LOST, status]);
 
   const handleEpiphany = () => {
-    setIsEpiphanyClicked(true);
+    dispatch(toggleEpiphany(true));
     setStatus(STATUS_PAUSE);
     let newTime = timer;
     console.log(timer);
     console.log(gameStartDate);
+    console.log(isEpiphanyClicked);
     // setStatus(STATUS_PREVIEW);
     let cardsWhenEpiphany = [];
     cardsWhenEpiphany = cards.map(card => {
@@ -250,7 +256,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   };
 
   const handleAlohomora = () => {
-    setIsAlohomoraClicked(true);
+    dispatch(toggleAlohomora(true));
     // Закрытые карты на игровом поле
     const closedCards = cards.filter(card => !card.open);
 
@@ -260,7 +266,24 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     let coupleOfRandomCard = cards.filter(card => card.suit === randomCard.suit && card.rank === randomCard.rank);
     console.log("случайная карта: ", randomCard);
     console.log("случайная пара карт: ", coupleOfRandomCard);
+    console.log(isAlohomoraClicked);
     coupleOfRandomCard = coupleOfRandomCard.map(card => (card.open = true));
+  };
+
+  const openTooltip = e => {
+    setIsAlohomoraTooltip(true);
+  };
+
+  const closeTooltip = index => {
+    setIsAlohomoraTooltip(false);
+  };
+
+  const openTooltipEpiphany = e => {
+    setIsEpiphanyTooltip(true);
+  };
+
+  const closeTooltipEpiphany = index => {
+    setIsEpiphanyTooltip(false);
   };
 
   return (
@@ -302,8 +325,19 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                     onClick={() => {
                       handleAlohomora();
                     }}
+                    onMouseEnter={e => {
+                      openTooltip(e);
+                    }}
+                    onMouseLeave={e => closeTooltip(e)}
                   >
                     <img className={styles.image} src={achiveAlohomoraImageUrl} alt={imgAlt} />
+                    {isAlohomoraTooltip ? (
+                      <div className={styles.tooltip}>
+                        <p className={styles.tooltipText}>
+                          <b>“Алохомора”.</b> <br></br> Открывается случайная <br></br>пара карт.
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 </>
               ) : null}{" "}
@@ -313,8 +347,20 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                     onClick={() => {
                       handleEpiphany();
                     }}
+                    onMouseEnter={e => {
+                      openTooltipEpiphany(e);
+                    }}
+                    onMouseLeave={e => closeTooltipEpiphany(e)}
                   >
                     <img className={styles.image} src={achiveEpiphanyImageUrl} alt={imgAlt} />
+                    {isEpiphanyTooltip ? (
+                      <div className={styles.tooltip}>
+                        <p className={styles.tooltipText}>
+                          <b>Прозрение</b> <br></br>На 5 секунд <br></br>показываются все <br></br>карты. Таймер{" "}
+                          <br></br>длительности игры <br></br>на это время<br></br> останавливается.
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 </>
               ) : null}
@@ -333,7 +379,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             suit={card.suit}
             rank={card.rank}
             isEpiphanyClicked={isEpiphanyClicked}
-            setIsEpiphanyClicked={setIsEpiphanyClicked}
+            // setIsEpiphanyClicked={setIsEpiphanyClicked}
           />
         ))}
       </div>
@@ -346,6 +392,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}
             isEpiphanyClicked={isEpiphanyClicked}
+            isAlohomoraClicked={isAlohomoraClicked}
           />
         </div>
       ) : null}

@@ -5,6 +5,8 @@ const cardSlice = createSlice({
   initialState: {
     cards: [],
     isChecked: false,
+    isAlohomoraClicked: false,
+    isEpiphanyClicked: false,
   },
   reducers: {
     toggleCheck(state, action) {
@@ -14,9 +16,15 @@ const cardSlice = createSlice({
         state.isChecked = !action.payload;
       }
     },
+    toggleAlohomora(state, action) {
+      state.isAlohomoraClicked = action.payload;
+    },
+    toggleEpiphany(state, action) {
+      state.isEpiphanyClicked = action.payload;
+    },
   },
 });
 
-export const { toggleCheck } = cardSlice.actions;
+export const { toggleCheck, toggleAlohomora, toggleEpiphany } = cardSlice.actions;
 
 export default cardSlice.reducer;

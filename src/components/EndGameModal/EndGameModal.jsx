@@ -7,9 +7,17 @@ import celebrationImageUrl from "./images/celebration.png";
 import { Link, useParams } from "react-router-dom";
 import { useAddLeadersMutation, useGetLeadersQuery } from "../../store";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 // import { postLeader } from "../../api";
 
-export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
+export function EndGameModal({
+  isWon,
+  gameDurationSeconds,
+  gameDurationMinutes,
+  onClick,
+  isEpiphanyClicked,
+  isAlohomoraClicked,
+}) {
   const params = useParams();
 
   const [newLeader, setNewLeader] = useState("");
@@ -17,6 +25,18 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const [addLeader] = useAddLeadersMutation();
 
   const { data = [], isLoading } = useGetLeadersQuery();
+
+  let achievements = [];
+
+  const isChecked = useSelector(state => state.cards.isChecked);
+
+  if (isAlohomoraClicked && isEpiphanyClicked) {
+    achievements.push("2");
+  }
+
+  if (isChecked) {
+    achievements.push("1");
+  }
 
   useEffect(() => console.log(data), []);
   useEffect(() => console.log(addLeader), []);
@@ -34,7 +54,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
 
   async function handleNewLeader() {
     if (newLeader) {
-      await addLeader({ name: newLeader, time: newTimeOfLeader });
+      await addLeader({ name: newLeader, time: newTimeOfLeader, achievements: achievements });
       setNewLeader(newLeader);
     }
   }

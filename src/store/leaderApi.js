@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const leadersApi = createApi({
   reducerPath: "leadersApi",
   // tagTypes: ["Leaders"],
-  baseQuery: fetchBaseQuery({ baseUrl: "https://wedev-api.sky.pro/api/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://wedev-api.sky.pro/api/v2/" }),
   endpoints: build => ({
     getLeaders: build.query({
       query: () => ({
