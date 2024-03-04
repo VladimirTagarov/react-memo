@@ -62,3 +62,31 @@
 .levelLink:visited {
   color: #0080c1;
 }
+
+.checkbox {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 48px;
+  margin-bottom: 28px;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.checkbox_text {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.checkbox_input {
+  width: 22px;
+  height: 17px;
+  margin-top: 7px;
+  margin-left: 4px;
+}
+
+.leaderboardLink {
+  font-size: 18px;
+  line-height: 32px;
+  color: #004980;
+}
